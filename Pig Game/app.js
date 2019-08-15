@@ -1,30 +1,40 @@
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, lastRoll, activePlayer, gamePlaying;
 
 // Initialize
 init();
 
 // Functions
 function switchPlayer() {
+    // switches to the other player
     document.getElementById('current-' + activePlayer).textContent = 0;
     document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+    // resets the scores and counters
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
     roundScore = 0;
+    lastRoll = 0;
     document.querySelector('.player-' + activePlayer + '-panel').classList.add('active');
-    //document.querySelector('.dice').style.display = 'none';
 }
 
 function diceRoll() {
     if (gamePlaying) {
-
-        var dice = Math.floor(Math.random() * 6) + 1;
-
+        // dice roll and change dice image
+        //var dice = Math.floor(Math.random() * 6) + 1;
+        var dice = 6;
         var diceDOM = document.querySelector('.dice');
         diceDOM.style.display = 'block';
         diceDOM.src = 'dice-' + dice + '.png';
 
-        if (dice !== 1) {
+        if (lastRoll == 6 && dice == 6) {
+            // lose all scores
+            scores[activePlayer] = 0
+            document.getElementById('score-' + activePlayer).textContent = 0;
+            switchPlayer();
+
+        } else if (dice !== 1) {
             roundScore += dice;
+            lastRoll = dice;
             document.getElementById('current-' + activePlayer).textContent = roundScore;
+
         } else {
             switchPlayer();
         }
@@ -63,6 +73,7 @@ function init() {
 
     scores = [0, 0];
     roundScore = 0;
+    lastRoll = 0;
     activePlayer = 0;
 
     document.querySelector('.dice').style.display = 'none';
